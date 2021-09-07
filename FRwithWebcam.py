@@ -1,15 +1,17 @@
 import numpy as np
 import face_recognition as fr
 import cv2
+import json
 
 video_capture = cv2.VideoCapture(0)
 
-my_image = fr.load_image_file("Face_recognition_attendance/lit2019066.jpg")
-my_face_encoding = fr.face_encodings(my_image)[0]
-
-known_face_encondings = [my_face_encoding]
-
-known_face_names = ["Mohsin"]
+known_face_encondings = list()
+known_face_names = list()
+f=open("encodings.json")
+all_face_encodings=json.load(f)
+for roll,enc in all_face_encodings.items():
+    known_face_names.append(roll)
+    known_face_encondings.append(enc)
 
 while True: 
     ret, frame = video_capture.read()
