@@ -1,12 +1,15 @@
 import face_recognition as fr
+import FirebaseBucket
+import json
+
 class FaceEncoder:
 
-    def getImg(rollNo):
+    def getImg(rollNo,saveDir):
         
         try:
             img = fr.load_image_file(saveDir+"/"+rollNo+".jpeg")
 
-        except  e:
+        except:
             img = fr.load_image_file(FirebaseBucket().downloadFaceImg(rollNo))
 
         return img
@@ -18,7 +21,7 @@ class FaceEncoder:
 
 
         # img = read_img(known_dir + '/' + file)
-        img_enc = face_recognition.face_encodings(img)[0]
+        img_enc = fr.face_encodings(img)[0]
 
 
         f = open('encodings.json',)
