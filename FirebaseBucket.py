@@ -6,9 +6,10 @@ import json
 
 
 class FirebaseBucket:
+
     def __init__(self):
         # cred = credentials.Certificate("/content/pythonfirebasebucket.json")
-# firebase_admin.initialize_app(cred)
+        # firebase_admin.initialize_app(cred)
 
         firebaseConfig = {
             "apiKey": "AIzaSyDgBG1Nhd69HTitzbXW4vPz9SBlYsAKIdw",
@@ -24,24 +25,28 @@ class FirebaseBucket:
 
 
         firebaseStorage = pyrebase.initialize_app(firebaseConfig)
-
+        self.saveDir="KnownFaces/"
         self.storage = firebaseStorage.storage()
         self.newFaces = []
         self.delFaces = []
 
         
+    def deleteImage(self,rollNo):
+        blob = self.storage.blob("faces/"+rollNo+".jpeg")
+        print("Deleting",blob)
+        blob.delete()
 
     def upload(self,localFilePath,firebaseFilePath):
         
         self.storage.child(firebaseFilePath).put(localFilePath)
 
     
-    def downloadFaceImg(self,rollNo:str,saveDir):
+    def downloadFaceImg(self,rollNo):
         
         
-        self.storage.child("faces/"+rollNo+".jpeg").download(saveDir+"/"+rollNo+".jpeg")
+        self.storage.child("faces/"+rollNo+".jpeg").download(self.saveDir+"/"+rollNo+".jpeg")
     
-        return saveDir+"/"+rollNo+".jpeg"
+        return self.saveDir+"/"+rollNo+".jpeg"
     
     def getChangedData(self):
         
@@ -53,9 +58,5 @@ class FirebaseBucket:
         # returns JSON object as 
         # a dictionary
         data = json.load(f)
-
-        self.newFaces = data["newFaces"]
-        self.delFaces = data["delFaces"]
-
-        return self.newFaces,self.delFaces
+        return data
 
