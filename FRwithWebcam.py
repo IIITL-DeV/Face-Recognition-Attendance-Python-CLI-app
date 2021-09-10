@@ -5,7 +5,7 @@ import json
 import FaceEncoder
 
 print("Running Encoding updater, please wait.")
-FaceEncoder.encodingUpdater()
+#FaceEncoder.encodingUpdater()
 print("Updating finished, now running webcam")
 
 video_capture = cv2.VideoCapture(0)
@@ -14,6 +14,7 @@ known_face_encondings = list()
 known_face_names = list()
 f=open("encodings.json")
 all_face_encodings=json.load(f)
+f.close()
 for roll,enc in all_face_encodings.items():
     known_face_names.append(roll)
     known_face_encondings.append(np.array(enc))

@@ -25,7 +25,7 @@ class FirebaseBucket:
 
 
         firebaseStorage = pyrebase.initialize_app(firebaseConfig)
-        self.saveDir="KnownFaces/"
+        self.saveDir="FaceRecognitionAttendance/KnownFaces/"
         self.storage = firebaseStorage.storage()
         self.newFaces = []
         self.delFaces = []

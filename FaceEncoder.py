@@ -3,9 +3,9 @@ import FirebaseBucket
 import json
 
 class FaceEncoder:
-    saveDir="KnownFaces/"
-    localJsonDir="CurrentFaceData.json/"
-    encDir="encodings.json"
+    saveDir="FaceRecognitionAttendance/KnownFaces/"
+    localJsonDir="FaceRecognitionAttendance/CurrentFaceData.json/"
+    encDir="FaceRecognitionAttendance/encodings.json"
 
     def getEcoding(self,rollNo):
         FirebaseBucket.downloadFaceImg(rollNo)
