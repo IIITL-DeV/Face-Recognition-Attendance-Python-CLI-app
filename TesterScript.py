@@ -9,7 +9,7 @@ enc = fr.face_encodings(img)[0]
 x={
     "lit2019066":enc.tolist()
 }
-
+helloo
 f=open("FaceRecognitionAttendance/encodings.json","w")
 y=json.dump(x,f)
 f.close()'''
