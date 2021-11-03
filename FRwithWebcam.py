@@ -3,10 +3,22 @@ import face_recognition as fr
 import cv2
 import json
 import FaceEncoder
+from FaceEncoder import FaceEncoder
+from WorkbookWriter import WorkbookWriter as wbw
+from FirebaseBucket import FirebaseBucket
 
-print("Running Encoding updater, please wait.")
-#FaceEncoder.encodingUpdater()
-print("Updating finished, now running webcam")
+fb=FirebaseBucket()
+class_info=fb.getCurrentClass()
+
+
+fe=FaceEncoder()
+
+
+# print("Running Encoding updater, please wait.")
+# fe.encodingUpdater()
+# print("Updating finished, now running webcam")
+class_name=class_info["subject"]+class_info["batch"]+class_info["batchyear"]
+wb=wbw(class_name)
 
 video_capture = cv2.VideoCapture(0)
 
@@ -38,6 +50,9 @@ while True:
         best_match_index = np.argmin(face_distances)
         if matches[best_match_index]:
             name = known_face_names[best_match_index]
+            wb.write()
+
+        
 
         #code below makes the rectangle so can be removed when needed
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)

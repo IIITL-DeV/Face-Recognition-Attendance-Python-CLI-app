@@ -1,24 +1,27 @@
 import face_recognition as fr
-import FirebaseBucket
+from FirebaseBucket import FirebaseBucket
 import json
+from pathlib import Path
 
 class FaceEncoder:
-    saveDir="FaceRecognitionAttendance/KnownFaces/"
-    localJsonDir="FaceRecognitionAttendance/CurrentFaceData.json/"
-    encDir="FaceRecognitionAttendance/encodings.json"
+    src=str(Path().resolve())
+    saveDir="KnownFaces/"
+    localJsonDir=src+"/CurrentFaceData.json"
+    encDir=src+"/encodings.json"
+    fbb=FirebaseBucket()
 
     def getEcoding(self,rollNo):
-        FirebaseBucket.downloadFaceImg(rollNo)
+        self.fbb.downloadFaceImg(rollNo)
         img=fr.load_image_file(self.saveDir+rollNo+".jpg")
         enc = fr.face_encodings(img)[0]
-        FirebaseBucket.deleteImage(self,rollNo)
+        self.fbb.deleteImage(self,rollNo)
         return enc.tolist()
     
     def encodingUpdater(self):
         f=open(self.localJsonDir)
         f2=open(self.encDir)
         locData=json.load(f)
-        fbData=FirebaseBucket.getChangedData()
+        fbData=self.fbb.getChangedData()
         encData=json.load(f2)
         f.close()
         f2.close()

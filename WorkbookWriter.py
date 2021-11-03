@@ -39,5 +39,17 @@ class WorkbookWriter:
         else:
             self.fill_sheet(wb,name, False)    
 
-    def write(self,rollno,present):
-        pass
+    def write(self,rollno,name,present):
+        month=calendar.month_name[int(str(date.today())[5:7])]
+        wb=self.workbook
+        ws=wb[month]
+        hook=ws['A1']
+        row=int(rollno[-3:])
+        col=int(self.date[-2:])+1
+        hook.offset(row=row,column=0).value=rollno
+        hook.offset(row=row,column=1).value=name
+        if present:
+            hook.offset(row=row,column=col).value='P'
+        else:
+            hook.offset(row=row,column=col).value='A'
+        wb.save(self.path)
