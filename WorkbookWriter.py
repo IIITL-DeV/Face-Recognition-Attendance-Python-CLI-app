@@ -1,59 +1,43 @@
-
 from pathlib import Path
 from openpyxl import load_workbook, Workbook 
 from datetime import date
-
-# PATH='Attend.xlsx'
-# wb = load_workbook(filename=PATH, read_only=False)
-# rng=wb["Sheet1"]["A1":"D6"]
-# rng[0][0].offset(row=0, column=0).value = 'Marks Mom'
-# for cells in rng:
-#     for cell in cells:
-#         print(cell.value,end = " ")
-#     print()
-# cell.offset(row=0, column=0).value = ''
-
+import calendar
 
 class WorkbookWriter:
-    def __init__(self,path):
-        self.path = path
-        self.workbook = load_workbook(filename=path, read_only=False)
-    
+    def __init__(self,name):
+        self.path = str(Path().resolve())+'/AttendanceSheets/'+name+'.xlsx'
+        try:
+            self.workbook = load_workbook(filename=self.path, read_only=False)
+        except:
+            self.create_new_sheet(name)
+            self.workbook = load_workbook(filename=self.path, read_only=False)
         self.date = str(date.today())
 
-    def write(self,rollno,present,display = False):
+    def fill_sheet(self, wb, name,fresh=True):
+        month=calendar.month_name[int(str(date.today())[5:7])]
+        max_days=calendar.monthrange(int(str(date.today())[:4]),int(str(date.today())[5:7]))[1]
+        s=str(Path().resolve())+'/AttendanceSheets/'+name+'.xlsx'
+        ws=None
+        if fresh:
+            ws=wb.active
+            ws.title=month
+        else:
+            ws = wb.create_sheet(title=month, index=0)
+        ws['A1']='Roll Number'
+        ws['B1']='Name'
+        hook=ws['B1']
+        for i in range(0,max_days):
+            hook.offset(row=0,column=i+1).value=i+1
+        hook.offset(row=0,column=max_days+1).value='Total'
+        hook.offset(row=0,column=max_days+2).value='Percentage'
+        wb.save(s)
 
-        day = int(self.date.split("-")[-1])
+    def create_new_sheet(self, name, wb=None):
+        if wb==None:
+            wb=Workbook()
+            self.fill_sheet(wb,name)
+        else:
+            self.fill_sheet(wb,name, False)    
 
-        rng = self.workbook[self.getCurrentSheet()]["A1":"AL160"]
-
-        rln = int(rollno[-2:])
-
-
-        rng[rln+1][day+1].value="P" if present else "A"
-
-        if(display):
-            for cells in rng:
-                for cell in cells:
-                    print(cell.value,end = " ")
-                print()
-
-        self.workbook.save(self.path)
-
-    def getCurrentSheet(self):
-        # "year-month"
-        return self.date[:7]
-
-
-        
-
-
-
-
-    
-    
-# a = WorkbookWriter("Attend.xlsx")
-# a.write("003",True)
-# a.show()
-# a.savewb()
-
+    def write(self,rollno,present):
+        pass
