@@ -28,17 +28,17 @@ class FirebaseBucket:
 
 
         firebaseStorage = pyrebase.initialize_app(firebaseConfig)
-        self.saveDir="FaceRecognitionAttendance/KnownFaces/"
+        self.saveDir="KnownFaces/"
         self.storage = firebaseStorage.storage()
         self.newFaces = []
         self.delFaces = []
         self.db = firestore.client()
 
         
-    def deleteImage(self,rollNo):
-        blob = self.storage.blob("faces/"+rollNo+".jpeg")
-        print("Deleting",blob)
-        blob.delete()
+    # def deleteImage(self,rollNo):
+    #     self.storage.child(("faces/"+rollNo)).remove
+    #     print("Deleting",blob)
+    #     blob.delete()
 
     def upload(self,localFilePath,firebaseFilePath):
         
@@ -46,22 +46,17 @@ class FirebaseBucket:
 
     
     def downloadFaceImg(self,rollNo):
-        
-        
-        self.storage.child("faces/"+rollNo+".jpeg").download(self.saveDir+"/"+rollNo+".jpeg")
-    
-        return self.saveDir+"/"+rollNo+".jpeg"
+        self.storage.child("faces/"+rollNo).download(self.saveDir+rollNo+'.jpg')
+        # except:
+        #     print("Download Failed")
     
     def getChangedData(self):
-        
-        self.storage.child("ChangedData.json").download("ChangedData.json")
-
-        # Opening JSON file
-        f = open('ChangedData.json',)
-        
-        # returns JSON object as 
-        # a dictionary
-        data = json.load(f)
+        data=dict()
+        ref=self.db.collection("students")
+        students=ref.stream()
+        for s in students:
+            temp=s.to_dict()
+            data[s.id]=temp["lastupdated"]
         return data
 
     def getCurrentClass(self):
@@ -76,3 +71,12 @@ class FirebaseBucket:
                 print("Current class is: "+name)
                 info["name"]=name
                 return info
+    
+    def updateStudentInfo(self):
+        ref=self.db.collection("students")
+        students=ref.stream()
+        info=dict()
+        for s in students:
+            info[s.id]=s.to_dict()
+        f = open('StudentInfo.json','w')
+        json.dump(info,f)

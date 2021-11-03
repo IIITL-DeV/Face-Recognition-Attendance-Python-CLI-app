@@ -1,8 +1,20 @@
-from FirebaseBucket import FirebaseBucket
+from FirebaseBucket import FirebaseBucket as fb
+import face_recognition as fr
+from pathlib import Path
+import json
 
-fb=FirebaseBucket()
-fb.getCurrentClass()
+src=str(Path().resolve())
+saveDir="KnownFaces/"
+rollNo='lit2019066'
+encDir=src+"/encodings.json"
 
+img=fr.load_image_file(saveDir+rollNo+".jpg")
+enc = fr.face_encodings(img)[0]
+f=open(encDir,'w')
+loca=dict()
+loca['LIT2019066']=enc.tolist()
+json.dump(loca,f)
+f.close()
 
 # import WorkbookWriter as waw
 # from datetime import date

@@ -2,21 +2,14 @@ import numpy as np
 import face_recognition as fr
 import cv2
 import json
-import FaceEncoder
 from FaceEncoder import FaceEncoder
 from WorkbookWriter import WorkbookWriter as wbw
-from FirebaseBucket import FirebaseBucket
-
-fb=FirebaseBucket()
-class_info=fb.getCurrentClass()
-
 
 fe=FaceEncoder()
+class_info=fe.encodingUpdater()
+print("Updating finished, now running webcam")
 
 
-# print("Running Encoding updater, please wait.")
-# fe.encodingUpdater()
-# print("Updating finished, now running webcam")
 class_name=class_info["subject"]+class_info["batch"]+class_info["batchyear"]
 wb=wbw(class_name)
 
@@ -25,6 +18,9 @@ video_capture = cv2.VideoCapture(0)
 known_face_encondings = list()
 known_face_names = list()
 f=open("encodings.json")
+f2=open("StudentInfo.json")
+
+studentinfo=json.load(f2)
 all_face_encodings=json.load(f)
 f.close()
 for roll,enc in all_face_encodings.items():
@@ -50,9 +46,7 @@ while True:
         best_match_index = np.argmin(face_distances)
         if matches[best_match_index]:
             name = known_face_names[best_match_index]
-            wb.write()
-
-        
+            wb.write(name,studentinfo[name]['name'],True)        
 
         #code below makes the rectangle so can be removed when needed
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
