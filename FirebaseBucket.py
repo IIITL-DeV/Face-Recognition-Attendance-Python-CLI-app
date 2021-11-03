@@ -1,15 +1,18 @@
 import firebase_admin
 from firebase_admin import credentials
-
+from firebase_admin import firestore
+from pathlib import Path
 import pyrebase
 import json
+from datetime import datetime
 
 
 class FirebaseBucket:
 
     def __init__(self):
-        # cred = credentials.Certificate("/content/pythonfirebasebucket.json")
-        # firebase_admin.initialize_app(cred)
+        path=str(Path().resolve())+"/pythonfirebasebucket.json"
+        cred = credentials.Certificate(path)
+        firebase_admin.initialize_app(cred)
 
         firebaseConfig = {
             "apiKey": "AIzaSyDgBG1Nhd69HTitzbXW4vPz9SBlYsAKIdw",
@@ -20,7 +23,7 @@ class FirebaseBucket:
             "messagingSenderId": "767588793860",
             "appId": "1:767588793860:web:08dfb9a3d51fdd6cee3f51",
             "measurementId": "G-1EMCQRDRW6",
-            "serviceAccount":"/content/pythonfirebasebucket.json"
+            "serviceAccount":path
         }
 
 
@@ -29,6 +32,7 @@ class FirebaseBucket:
         self.storage = firebaseStorage.storage()
         self.newFaces = []
         self.delFaces = []
+        self.db = firestore.client()
 
         
     def deleteImage(self,rollNo):
@@ -60,3 +64,15 @@ class FirebaseBucket:
         data = json.load(f)
         return data
 
+    def getCurrentClass(self):
+        ref=self.db.collection("classes")
+        classes=ref.stream()
+        t=datetime.now()
+        hook=str(t.hour)+str(t.minute)
+        for c in classes:
+            name=c.id
+            info=c.to_dict()
+            if int(info['starttime'])<=int(hook) and int(info['endtime'])>int(hook):
+                print("Current class is: "+name)
+                info["name"]=name
+                return info
