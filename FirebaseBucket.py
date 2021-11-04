@@ -11,21 +11,13 @@ class FirebaseBucket:
 
     def __init__(self):
         path=str(Path().resolve())+"/pythonfirebasebucket.json"
+        configpath=str(Path().resolve())+'/firebaseconfig.json'
         cred = credentials.Certificate(path)
         firebase_admin.initialize_app(cred)
-
-        firebaseConfig = {
-            "apiKey": "AIzaSyDgBG1Nhd69HTitzbXW4vPz9SBlYsAKIdw",
-            "authDomain": "pythonfirebasebucket.firebaseapp.com",
-            "projectId": "pythonfirebasebucket",
-            "databaseURL":"https://pythonfirebasebucket.firebaseio.com",
-            "storageBucket": "pythonfirebasebucket.appspot.com",
-            "messagingSenderId": "767588793860",
-            "appId": "1:767588793860:web:08dfb9a3d51fdd6cee3f51",
-            "measurementId": "G-1EMCQRDRW6",
-            "serviceAccount":path
-        }
-
+        
+        con=open(configpath)
+        firebaseConfig=json.load(con)
+        firebaseConfig["serviceAccount"]=path
 
         firebaseStorage = pyrebase.initialize_app(firebaseConfig)
         self.saveDir="KnownFaces/"
