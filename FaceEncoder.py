@@ -17,6 +17,15 @@ class FaceEncoder:
         # self.fbb.deleteImage(rollNo)
         return enc.tolist()
     
+    def create_new_class(self, class_info):
+        self.fbb.createClass(class_info)
+    
+    def update_class_total(self,name):
+        self.fbb.updateCLassTotal(name)
+
+    def update_presence_of_student(self,roll,class_name):
+        self.fbb.updatePresence(roll,class_name)
+
     def encodingUpdater(self):
         print("Updating student info, please wait.")
         self.fbb.updateStudentInfo()

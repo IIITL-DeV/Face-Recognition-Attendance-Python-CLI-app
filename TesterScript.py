@@ -1,20 +1,28 @@
-from FirebaseBucket import FirebaseBucket as fb
-import face_recognition as fr
-from pathlib import Path
-import json
+from FaceEncoder import FaceEncoder as fe
+cls='Algorithms2019'
+roll='LIT2019066'
+f=fe()
+f.update_class_total(cls)
+f.update_presence_of_student(roll,cls)
 
-src=str(Path().resolve())
-saveDir="KnownFaces/"
-rollNo='lit2019066'
-encDir=src+"/encodings.json"
 
-img=fr.load_image_file(saveDir+rollNo+".jpg")
-enc = fr.face_encodings(img)[0]
-f=open(encDir,'w')
-loca=dict()
-loca['LIT2019066']=enc.tolist()
-json.dump(loca,f)
-f.close()
+# from FirebaseBucket import FirebaseBucket as fb
+# import face_recognition as fr
+# from pathlib import Path
+# import json
+
+# src=str(Path().resolve())
+# saveDir="KnownFaces/"
+# rollNo='lit2019066'
+# encDir=src+"/encodings.json"
+
+# img=fr.load_image_file(saveDir+rollNo+".jpg")
+# enc = fr.face_encodings(img)[0]
+# f=open(encDir,'w')
+# loca=dict()
+# loca['LIT2019066']=enc.tolist()
+# json.dump(loca,f)
+# f.close()
 
 # import WorkbookWriter as waw
 # from datetime import date

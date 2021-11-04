@@ -7,10 +7,25 @@ from WorkbookWriter import WorkbookWriter as wbw
 
 fe=FaceEncoder()
 class_info=fe.encodingUpdater()
+flags=dict()
+if class_info==0:
+    print("No classes scheduled right now, do you still want to continue? (Y/N)")
+    if input().lower=='y':
+        print("Starting a new class")
+        class_info=dict()
+        class_info["subject"]=input("Enter subject, example Cryptography\n")
+        class_info["batch"]=input("Enter batch example IT, CS etc \n")
+        class_info["batchyear"]=input("Enter batch year, example 2019 \n")
+        class_info['total']='0'
+        fe.create_new_class(class_info)
+    else:
+        print("Shutting down program \n")
+        quit()
+fe.update_class_total(class_info['subject']+class_info['batchyear'])
 print("Updating finished, now running webcam")
 
 
-class_name=class_info["subject"]+class_info["batch"]+class_info["batchyear"]
+class_name=class_info["subject"]+class_info["batchyear"]
 wb=wbw(class_name)
 
 video_capture = cv2.VideoCapture(0)
@@ -46,7 +61,10 @@ while True:
         best_match_index = np.argmin(face_distances)
         if matches[best_match_index]:
             name = known_face_names[best_match_index]
-            wb.write(name,studentinfo[name]['name'],True)        
+            if name not in flags:
+                wb.write(name,studentinfo[name]['name'],True)
+                fe.update_presence_of_student(name,class_name)
+                flags[name]=1
 
         #code below makes the rectangle so can be removed when needed
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)

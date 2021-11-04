@@ -29,6 +29,8 @@ class WorkbookWriter:
         for i in range(0,max_days):
             hook.offset(row=0,column=i+1).value=i+1
         hook.offset(row=0,column=max_days+1).value='Total'
+        for i in range(1,101):
+            pass
         hook.offset(row=0,column=max_days+2).value='Percentage'
         wb.save(s)
 
